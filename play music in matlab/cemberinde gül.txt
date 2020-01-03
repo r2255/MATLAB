@@ -1,0 +1,77 @@
+function cemberimde_gul_oya = cemberimde_gul_oya()
+sarki = [];
+Fs = 44100;
+
+C = 261.626;
+D = 293.665; 
+E = 329.628;
+F = 349.228; 
+G = 391.995;
+A = 440.000; 
+B = 493.883; 
+c = 523.251; 
+d = 587.330;
+e = 659.255;
+f = 698.456;
+g = 783.991;
+a = 880.000;
+b = 987.767;
+X = 0; 
+
+
+
+notalar = [E E F G A G F F E E X c c c c B B c A G G G A G F E D E G G A G F E F G G G c c B A c B B A G B B B c A G A A c B A G F E E F G E F D E ...
+          E E F G A G F F E E X c c c c B B c A G G G A G F E D E G G A G F E F G G G c c B A c B B A G B B B c A G A A c B A G F E E F G E F D E];
+              
+vuruslar = [8 8 8 4 4 4 4 4 4 16 8 12 4 8 8 16 4 4 8 8 24 4 4 4 4 4 4 24 24 4 4 4 4 4 4 24 8 8 8 8 8 8 24 8 8 8 8 8 8 4 4 8 8 16 8 8 8 8 16 8 24 4 4 4 4 4 4 24 ...
+           8 8 8 4 4 4 4 4 4 16 8 12 4 8 8 16 4 4 8 8 24 4 4 4 4 4 4 24 24 4 4 4 4 4 4 24 8 8 8 8 8 8 24 8 8 8 8 8 8 4 4 8 8 16 8 8 8 8 16 8 24 4 4 4 4 4 4 24];
+
+
+bekleme = 1;
+bekleme_sayaci = 0;
+
+bekleme_miktari = 0.1;
+bekleme_degeri = 0;
+
+for (a = 1: 1: ((length(notalar) * 2) - 1))
+    
+    if bekleme_degeri == 0
+        
+    t = 1/Fs:1/Fs:(vuruslar(a - bekleme_sayaci)/24);
+    
+    mid = (t(1)+t(end))/2;
+    tri = -(abs(t-mid)-mid);
+    tri = tri./max(tri);
+    
+    y = sin(notalar(a - bekleme_sayaci)*2*pi*t).*tri;
+    
+    sarki = [sarki, y];
+    
+    elseif bekleme_degeri == 1
+        
+    t = 1/Fs:1/Fs:(bekleme_miktari/24);
+    tt = (bekleme_miktari/24):-1/Fs:1/Fs
+    
+    y = sin(0*2*pi*t).*exp(tt);
+    sarki = [sarki, y];
+    bekleme_sayaci = bekleme_sayaci + 1;a
+    
+    end
+    
+    if bekleme_degeri == 1
+
+        bekleme_degeri = 0;
+        
+    elseif bekleme_degeri == 0
+    
+        bekleme_degeri = 1;
+        
+    end
+    
+
+end
+
+sound(sarki, Fs);
+plot(sarki);
+
+end
